@@ -1,0 +1,36 @@
+# Keil 工程文件
+*.uvguix*
+*.uvoptx
+*.scvd
+*.crf
+*.d
+*.dep
+*.hex
+*.htm
+*.map
+*.axf
+*.lnp
+*.lst
+*.o
+*.sct
+*.target
+
+# 编译输出文件夹
+Debug/
+DebugConfig/
+Listings/
+Objects/
+RTE/
+
+# JLink 日志
+JLinkLog.txt
+JLinkSettings.ini
+
+# Windows 系统文件
+Thumbs.db
+desktop.ini
+
+# 编辑器备份文件
+*~
+*.swp
+*.swo
