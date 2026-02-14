@@ -49,4 +49,5 @@ void LED2_Turn(void)
 	LED2_ON();
     Delay_s(2);
     LED2_OFF();
+    Delay_s(2);
 }

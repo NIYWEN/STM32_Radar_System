@@ -1,5 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include <time.h>
+#include "LED.h"
+#include "PWM.h"
 
 uint16_t MyRTC_Time[] = {2023, 1, 1, 23, 59, 55};
 
@@ -113,3 +115,10 @@ void MyRTC_ReadTime(void)
 	MyRTC_Time[4] = time_date.tm_min;
 	MyRTC_Time[5] = time_date.tm_sec;
 }
+
+uint32_t GetTick(void)
+{
+    return TIM_GetCounter(TIM2);  // 或者用SysTick
+}
+
+

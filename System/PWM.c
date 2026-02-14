@@ -61,3 +61,11 @@ void three_sound(void)
     PWM_SetCompare1(0);
     Delay_s(1);
 }
+
+void onesound(void)
+{
+    PWM_SetCompare1(100);
+    Delay_s(1);
+    PWM_SetCompare1(0);
+    Delay_s(1);
+}

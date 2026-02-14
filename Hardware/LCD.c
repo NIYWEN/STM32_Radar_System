@@ -120,38 +120,56 @@ void LCD_Init(void)
 /* 设置光标位置 */
 void LCD_SetCursor(u16 x, u16 y)
 {
-    LCD_WriteCmd(0x2A);     // 列地址设置
-    LCD_WriteData_16Bit(x);
-    LCD_WriteData_16Bit(x);
+    LCD_WriteCmd(0x2A);
+    LCD_WriteData(x >> 8);
+    LCD_WriteData(x & 0xFF);
+    LCD_WriteData(x >> 8);
+    LCD_WriteData(x & 0xFF);
     
-    LCD_WriteCmd(0x2B);     // 行地址设置
-    LCD_WriteData_16Bit(y);
-    LCD_WriteData_16Bit(y);
+    LCD_WriteCmd(0x2B);
+    LCD_WriteData(y >> 8);
+    LCD_WriteData(y & 0xFF);
+    LCD_WriteData(y >> 8);
+    LCD_WriteData(y & 0xFF);
     
-    LCD_WriteCmd(0x2C);     // 写存储器
+    LCD_WriteCmd(0x2C);
 }
+
 
 /* 画点 */
 void LCD_DrawPoint(u16 x, u16 y, u16 color)
 {
-    if(x >=129|| y >= 129) return;
+    if(x >= 128 || y >= 128) return;  // 修正边界检查
     
-    LCD_SetCursor(x, y);
+    LCD_SetCursor(x, y);        // 现在可以正确工作了
     LCD_WriteData_16Bit(color);
 }
 
-/* 清屏(有问题，无法清屏，一点都画不上 ）*/
+//清屏
 void LCD_Clear(u16 color)
 {
-    u16 i, j;
-    LCD_SetCursor(0, 0);
+    u32 i;
+    u32 total_pixels = 128 * 128;
     
-    for(i = 0; i < 129; i++)
+    // 先设置全屏范围，再移动光标到起点
+    LCD_WriteCmd(0x2A);
+    LCD_WriteData(0);      // 列起始 0
+    LCD_WriteData(0);
+    LCD_WriteData(0);      // 列结束 127
+    LCD_WriteData(127);
+    
+    LCD_WriteCmd(0x2B);
+    LCD_WriteData(0);      // 行起始 0
+    LCD_WriteData(0);
+    LCD_WriteData(0);      // 行结束 127
+    LCD_WriteData(127);
+    
+    LCD_WriteCmd(0x2C);    // 开始写入
+    
+    // 批量写入
+    for(i = 0; i < total_pixels; i++)
     {
-        for(j = 0; j < 129; j++)
-        {
-            LCD_WriteData_16Bit(color);
-        }
+        LCD_WriteData_16Bit(color);
     }
 }
 
@@ -185,25 +203,70 @@ void LCD_DrawLine(u16 x1, u16 y1, u16 x2, u16 y2, u16 color)
     }
 }
 
-/* 画圆（Bresenham算法）*/
-void LCD_DrawCircle(u16 x0, u16 y0, u16 r, u16 color)
+
+/* 雷达画圆 - 以雷达原点(64,64)为中心，支持负数坐标 */
+void LCD_DrawCircle_Radar(s16 x0, s16 y0, u16 r, u16 color)
 {
     s16 x = 0, y = r;
     s16 d = 3 - 2 * r;
+    s16 screen_x, screen_y;
+    s16 radar_center_x = 64;  // 雷达中心X坐标
+    s16 radar_center_y = 64;  // 雷达中心Y坐标
     
     while(x <= y)
     {
-        LCD_DrawPoint(x0 + x, y0 + y, color);
-        LCD_DrawPoint(x0 - x, y0 + y, color);
-        LCD_DrawPoint(x0 + x, y0 - y, color);
-        LCD_DrawPoint(x0 - x, y0 - y, color);
-        LCD_DrawPoint(x0 + y, y0 + x, color);
-        LCD_DrawPoint(x0 - y, y0 + x, color);
-        LCD_DrawPoint(x0 + y, y0 - x, color);
-        LCD_DrawPoint(x0 - y, y0 - x, color);
+        // 计算8个对称点，并转换为屏幕坐标
+        // 点1: (x0 + x, y0 + y)
+        screen_x = radar_center_x + (x0 + x);
+        screen_y = radar_center_y - (y0 + y);  // Y轴取反（屏幕Y向下为正）
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点2: (x0 - x, y0 + y)
+        screen_x = radar_center_x + (x0 - x);
+        screen_y = radar_center_y - (y0 + y);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点3: (x0 + x, y0 - y)
+        screen_x = radar_center_x + (x0 + x);
+        screen_y = radar_center_y - (y0 - y);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点4: (x0 - x, y0 - y)
+        screen_x = radar_center_x + (x0 - x);
+        screen_y = radar_center_y - (y0 - y);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点5: (x0 + y, y0 + x)
+        screen_x = radar_center_x + (x0 + y);
+        screen_y = radar_center_y - (y0 + x);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点6: (x0 - y, y0 + x)
+        screen_x = radar_center_x + (x0 - y);
+        screen_y = radar_center_y - (y0 + x);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点7: (x0 + y, y0 - x)
+        screen_x = radar_center_x + (x0 + y);
+        screen_y = radar_center_y - (y0 - x);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
+        
+        // 点8: (x0 - y, y0 - x)
+        screen_x = radar_center_x + (x0 - y);
+        screen_y = radar_center_y - (y0 - x);
+        if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+            LCD_DrawPoint(screen_x, screen_y, color);
         
         x++;
-        if(d < 0) d += 4 * x + 6;
+        if(d < 0) 
+            d += 4 * x + 6;
         else
         {
             y--;
@@ -213,16 +276,24 @@ void LCD_DrawCircle(u16 x0, u16 y0, u16 r, u16 color)
 }
 
 /* 画实心圆 */
-void LCD_DrawFillCircle(u16 x0, u16 y0, u16 r, u16 color)
+void LCD_DrawFillCircle_Radar(s16 x0, s16 y0, u16 r, u16 color)
 {
     s16 x, y;
-    for(y = y0 - r; y <= y0 + r; y++)
+    s16 screen_x, screen_y;
+    s16 radar_center_x = 64;
+    s16 radar_center_y = 64;
+    
+    for(y = -r; y <= r; y++)
     {
-        for(x = x0 - r; x <= x0 + r; x++)
+        for(x = -r; x <= r; x++)
         {
-            if((x - x0) * (x - x0) + (y - y0) * (y - y0) <= r * r)
+            if(x*x + y*y <= r*r)
             {
-                LCD_DrawPoint(x, y, color);
+                screen_x = radar_center_x + x0 + x;
+                screen_y = radar_center_y - (y0 + y);
+                
+                if(screen_x >= 0 && screen_x < 128 && screen_y >= 0 && screen_y < 128)
+                    LCD_DrawPoint(screen_x, screen_y, color);
             }
         }
     }
@@ -358,4 +429,18 @@ void ShowStuNum(void)
         LCD_ShowString(i,0,"8614",WHITE);
     }
 
+}
+
+void leidatu(int8_t x,int8_t y)//敌人坐标，画点要注意转换
+{
+    LCD_Clear(BLACK);
+    LCD_DrawCircle_Radar(0,0,20,GREEN);
+    LCD_DrawCircle_Radar(0,0,40,GREEN);
+    LCD_DrawCircle_Radar(0,0,60,GREEN);
+    LCD_DrawCircle_Radar(0,0,80,GREEN);
+    LCD_DrawPoint(64,64,WHITE);//这个中心不是（0，0）。中心是（64，64）
+    LCD_DrawPoint(63,64,WHITE);
+    LCD_DrawPoint(64,63,WHITE);
+    LCD_DrawPoint(65,64,WHITE);
+    LCD_DrawPoint(64,65,WHITE);
 }

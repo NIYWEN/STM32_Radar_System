@@ -23,7 +23,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "Serial.h"  // 如果你需要用到 Serial_RxPacket 等变量
 volatile uint8_t wakeup_flag = 0;
+extern char Serial_RxPacket[100];
+extern uint8_t Serial_RxFlag;
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -135,6 +138,9 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
 }
+
+
+
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

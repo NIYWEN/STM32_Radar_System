@@ -62,12 +62,13 @@ void LCD_SetCursor(u16 x, u16 y);
 void LCD_DrawPoint(u16 x, u16 y, u16 color);
 void LCD_Clear(u16 color);
 void LCD_DrawLine(u16 x1, u16 y1, u16 x2, u16 y2, u16 color);
-void LCD_DrawCircle(u16 x0, u16 y0, u16 r, u16 color);
-void LCD_DrawFillCircle(u16 x0, u16 y0, u16 r, u16 color);
 void LCD_ForceClear(void);
 void LCD_ShowFloat(u16 x, u16 y, float num, u8 decimal, u16 color);
 void LCD_ShowInt(u16 x, u16 y, s32 num, u16 color);
 void LCD_ShowString(u16 x, u16 y, char *str, u16 color);
 void LCD_ShowChar(u16 x, u16 y, char c, u16 color);
 void ShowStuNum(void);
+void LCD_DrawCircle_Radar(s16 x0, s16 y0, u16 r, u16 color);
+void LCD_DrawFillCircle_Radar(s16 x0, s16 y0, u16 r, u16 color);
+void leidatu(int8_t x,int8_t y);//敌人坐标，画点要注意转换
 #endif
