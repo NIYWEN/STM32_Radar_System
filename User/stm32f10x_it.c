@@ -23,7 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-
+volatile uint8_t wakeup_flag = 0;
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */

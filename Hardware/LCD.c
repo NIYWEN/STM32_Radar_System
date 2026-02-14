@@ -1,3 +1,14 @@
+//LCD接线
+
+//              GND   电源地
+//              VCC   接5V
+//              SCL   接PA5（SCL）
+//              SDA   接PA7（SDA）
+//              RES   接PB0
+//              DC    接PB1
+//              CS    接PA4 
+//				BL    接PB10
+
 #include "stm32f10x.h"                  // Device header
 #include "LCD.h"
 #include "Delay.h"
@@ -123,21 +134,21 @@ void LCD_SetCursor(u16 x, u16 y)
 /* 画点 */
 void LCD_DrawPoint(u16 x, u16 y, u16 color)
 {
-    if(x >= LCD_WIDTH || y >= LCD_HEIGHT) return;
+    if(x >=129|| y >= 129) return;
     
     LCD_SetCursor(x, y);
     LCD_WriteData_16Bit(color);
 }
 
-/* 清屏 */
+/* 清屏(有问题，无法清屏，一点都画不上 ）*/
 void LCD_Clear(u16 color)
 {
     u16 i, j;
     LCD_SetCursor(0, 0);
     
-    for(i = 0; i < LCD_WIDTH; i++)
+    for(i = 0; i < 129; i++)
     {
-        for(j = 0; j < LCD_HEIGHT; j++)
+        for(j = 0; j < 129; j++)
         {
             LCD_WriteData_16Bit(color);
         }
@@ -346,5 +357,5 @@ void ShowStuNum(void)
         Delay_ms(50);
         LCD_ShowString(i,0,"8614",WHITE);
     }
-    LCD_ForceClear();
+
 }

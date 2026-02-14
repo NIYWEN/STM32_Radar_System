@@ -673,6 +673,21 @@
               <FileType>5</FileType>
               <FilePath>.\System\MyRTC.h</FilePath>
             </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\System\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\System\PWM.h</FilePath>
+            </File>
+            <File>
+              <FileName>wakeup.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\System\wakeup.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -727,6 +742,16 @@
               <FileName>LCD_Font.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\LCD_Font.h</FilePath>
+            </File>
+            <File>
+              <FileName>16key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\16key.c</FilePath>
+            </File>
+            <File>
+              <FileName>16key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\16key.h</FilePath>
             </File>
           </Files>
         </Group>
