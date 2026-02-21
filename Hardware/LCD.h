@@ -71,4 +71,6 @@ void ShowStuNum(void);
 void LCD_DrawCircle_Radar(s16 x0, s16 y0, u16 r, u16 color);
 void LCD_DrawFillCircle_Radar(s16 x0, s16 y0, u16 r, u16 color);
 void leidatu(int8_t x,int8_t y);//敌人坐标，画点要注意转换
+void redpointmoving(uint16_t x,uint16_t y);
+
 #endif

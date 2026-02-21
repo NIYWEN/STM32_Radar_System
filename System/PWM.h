@@ -5,5 +5,5 @@ void PWM_Init(void);
 void PWM_SetCompare1(uint16_t Compare);
 void three_sound(void);
 void onesound(void);
-    
+void PWM_SetCompare3(uint16_t Compare);
 #endif

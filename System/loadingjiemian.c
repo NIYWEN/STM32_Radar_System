@@ -59,7 +59,10 @@ void loading(void)
         }
     }
     
-    if(count >= 3) {three_sound();loading();}
+    if(count >= 3) {
+        three_sound();
+        LCD_ShowString(5, 5, "wait 3 seconds", BLACK);
+        Delay_s(3);loading();}
 }
 
     

@@ -386,7 +386,7 @@ void LCD_ShowInt(u16 x, u16 y, s32 num, u16 color)
 /* 显示浮点数 */
 void LCD_ShowFloat(u16 x, u16 y, float num, u8 decimal, u16 color)
 {
-    char buf[16];
+
     
     // 处理负数
     if(num < 0)
@@ -443,4 +443,11 @@ void leidatu(int8_t x,int8_t y)//敌人坐标，画点要注意转换
     LCD_DrawPoint(64,63,WHITE);
     LCD_DrawPoint(65,64,WHITE);
     LCD_DrawPoint(64,65,WHITE);
+}
+
+
+void redpointmoving(uint16_t x,uint16_t y)
+{
+    LCD_DrawFillCircle_Radar(x - 64,y - 64, 5, RED);
+    
 }
